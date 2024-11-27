@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction Results</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        body {
+            background-image: linear-gradient(to right, #4e54c8, #8f94fb);
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header, footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #232526;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        footer {
+            background-color: #17191a;
+            bottom: 0;
+        }
+        .container {
+            padding: 20px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+            max-width: 1000px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            font-size: 2rem;
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h3 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+        p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #555;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        section {
+            margin-bottom: 30px;
+            padding: 10px;
+        }
+        #price-section, #prediction-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .plot-container {
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            margin: 20px 0;
+        }
+        #news-section ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #news-section li {
+            margin: 15px 0;
+            background: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        #news-section li:hover {
+            transform: translateY(-5px);
+        }
+        #news-section li a {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1rem;
+        }
+        #news-section li p {
+            margin: 5px 0;
+        }
+        button {
+            background: #4CAF50;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .plot-container h3 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .plot-container iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 10px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            h1, h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.2rem;
+            }
+
+            p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Stock Prediction Results</h1>
+    </header>
+    <div class="container">
+        <section id="price-section">
+            <h2>Current Stock Price</h2>
+            <p><strong>Stock Symbol:</strong> {{ stock_symbol }}</p>
+            <p><strong>The Current Price is :</strong> ${{ current_price }}</p>
+        </section>
+        <section id="prediction-section">
+            <h2>Prediction Results</h2>
+            <p><strong>ARIMA Prediction:</strong> ${{ arima_pred }}</p>
+            <p><strong>Linear Regression Prediction:</strong> ${{ lr_pred }}</p>
+            <p><strong>ARIMA RMSE:</strong> {{ arima_rmse }}</p>
+            <p><strong>Linear Regression RMSE:</strong> {{ lr_rmse }}</p>
+            <p><strong>Recommendation:</strong> 
+                <span id="recommendation">{{ recommendation }}</span>
+            </p>
+            <p><strong>Sentiment Analysis:</strong> {{ sentiment_text }}</p>
+        </section>
+        <section id="graphs">
+            <h2>Prediction Graphs</h2>
+            <div class="plot-container">
+                <h3>Stock Price</h3>
+                {{ stock_plot|safe }}
+            </div>
+            <div class="plot-container">
+                <h3>ARIMA Predictions</h3>
+                {{ arima_plot|safe }}
+            </div>
+            <div class="plot-container">
+                <h3>Linear Regression Predictions</h3>
+                {{ lr_plot|safe }}
+            </div>
+        </section>
+        <section id="news-section">
+            <h2>Recent News Sentiment</h2>
+            <ul>
+                {% for article in news_articles %}
+                    <li>
+                        <a href="{{ article.url }}" target="_blank">{{ article.title }}</a>
+                        <p>{{ article.content }}</p>
+                        <p><strong>Sentiment:</strong> {{ article.sentiment }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+        
+    </div>
+    <footer>
+        <p>&copy; 2024 StockPredictionApp. All rights reserved.</p>
+    </footer>
+
+    <script>
+        var recommendation = "{{ recommendation }}";
+        var recommendationSpan = document.getElementById("recommendation");
+        
+        
+        if (recommendation == "BUY") {
+            recommendationSpan.style.color = "green";
+        } else if (recommendation == "SELL") {
+            recommendationSpan.style.color = "red";
+        } else {
+            recommendationSpan.style.color = "yellow"; 
+        }
+    </script>
+</body>
+</html>

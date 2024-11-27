@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header, main, footer {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+        }
+        header h1, main h2 {
+            color: #4CAF50;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin: 10px 0;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 300px;
+        }
+        button {
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+        #sentiment-display {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .sentiment {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .sentiment.positive {
+            color: #4CAF50;
+        }
+        .sentiment.negative {
+            color: #f44336;
+        }
+        .sentiment.neutral {
+            color: #FFC107;
+        }
+        canvas {
+            max-width: 100%;
+        }
+        footer {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Stock Prediction and News Sentiment Analysis</h1>
+    </header>
+    <main>
+        <section id="search-section">
+            <h2>Predict Stock Prices</h2>
+            <form id="stock-form" action="/predict" method="post">
+                <label for="stock-symbol">Enter Stock Symbol:</label>
+                <input type="text" id="stock-symbol" name="nm" placeholder="e.g., AAPL, MSFT" required>
+                <button type="submit">Predict</button>
+            </form>
+            <p class="error" id="error-message"></p>
+        </section>
+        <section id="news-sentiment-section">
+            <h2>Live Sentiment Updates</h2>
+            <div id="sentiment-display">
+                <p>Sentiment based on recent news: <span id="sentiment-text" class="sentiment">Neutral</span></p>
+                <p><strong>Recommendation: </strong><span id="recommendation">Hold</span></p>
+            </div>
+            <canvas id="sentiment-chart"></canvas>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 StockPredictionApp</p>
+    </footer>
+    <script>
+        
+        document.getElementById('stock-symbol').addEventListener('input', function() {
+            const value = this.value.trim();
+            const errorMessage = document.getElementById('error-message');
+            if (value && !/^[A-Z]{1,5}$/.test(value)) {
+                errorMessage.textContent = 'Please enter a valid stock symbol (e.g., AAPL, MSFT)';
+            } else {
+                errorMessage.textContent = '';
+            }
+        });
+
+        
+        const ctx = document.getElementById('sentiment-chart').getContext('2d');
+        const sentimentChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM'],
+                datasets: [{
+                    label: 'Sentiment Score',
+                    data: [0.1, 0.4, -0.2, 0.3, -0.1, 0.5, 0.2],
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+
+        setTimeout(() => {
+            document.getElementById('sentiment-text').textContent = 'Positive';
+            document.getElementById('sentiment-text').classList.add('positive');
+            document.getElementById('recommendation').textContent = 'Buy';
+        }, 5000);
+    </script>
+</body>
+</html>
