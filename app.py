@@ -68,8 +68,8 @@ def predict():
         return forecast[0], forecast, rmse
 
     def sentiment_analysis(symbol):
-        API_KEY = 'zpimh6y1gctuezu1wlvazknigiln6qjyfrkid7tn' 
-        url = f'https://stocknewsapi.com/api/v1?tickers={symbol}&items=10&token={API_KEY}'
+        API_KEY = '4g6ghyxq144urydocxz9rrscjdhufnv7xxwsw5p3' 
+        url = f'https://stocknewsapi.com/api/v1?tickers={symbol}&items=3&token={API_KEY}'
         response = requests.get(url).json()
 
         if not response.get('data'):
@@ -95,7 +95,7 @@ def predict():
 
 
         overall_sentiment = positive - negative + neutral
-        if overall_sentiment > 1.5:
+        if overall_sentiment > 0.5:
             sentiment_text = "Positive"
         elif overall_sentiment < 0:
             sentiment_text = "Negative"
@@ -160,7 +160,7 @@ def predict():
     ax.grid(color='gray', linestyle='--', linewidth=0.5)
     lr_plot = plot_to_mpld3(fig, lr_dates.dt.strftime('%Y-%m-%d'), lr_predictions)
     
-    if sentiment_score  > 1.5:
+    if sentiment_score  > 0.5:
         recommendation = "BUY"
     elif sentiment_score < 0:
         recommendation = "SELL"
