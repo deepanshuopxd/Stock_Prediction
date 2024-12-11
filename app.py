@@ -42,7 +42,7 @@ def predict():
         history = list(train)
         predictions = []
         for t in range(len(test)):
-            model = ARIMA(history, order=(15, 1, 0))
+            model = ARIMA(history, order=(10, 1, 0))
             model_fit = model.fit()
             forecast = model_fit.forecast()[0]
             predictions.append(forecast)
@@ -51,7 +51,7 @@ def predict():
         return predictions[-1], predictions, rmse
 
     def linear_regression_model(data):
-        forecast_out = 30
+        forecast_out = 15
         data['CloseAfterN'] = data['Close'].shift(-forecast_out)
         X = data[['Close']].iloc[:-forecast_out]
         y = data['CloseAfterN'].iloc[:-forecast_out]
